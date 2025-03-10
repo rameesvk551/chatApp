@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect } from "react";
+import NavBar from "./components/NavBar";
+import { Route, Routes } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingsPage";
+import HomePage from "./pages/HomePage";
+import { userAuthStore } from "./store/userAuthStore.ts";
+import { Loader } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const { isCheckingAuth, authState, checkAuth } = userAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+  console.log(authState);
+  
+
+  if (isCheckingAuth  ) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader className="size-10 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={authState ? <HomePage /> : <LoginPage />} />
+        <Route
+          path="/login"
+          element={!authState ? <LoginPage /> : <HomePage />}
+        />
+        <Route
+          path="/signup"
+          element={! authState ? <SignupPage /> : <HomePage />}
+        />
+        <Route
+          path="/profile"
+          element={authState ? <ProfilePage /> : <LoginPage />}
+        />
+        <Route
+          path="/settings"
+          element={authState ? <SettingsPage /> : <LoginPage />}
+        />
+      </Routes>
+      <Toaster/>
+    </div>
+  );
+};
 
-export default App
+export default App;

@@ -2,29 +2,36 @@ import cloudinary from "../lib/cloudinary.config.js"
 import Message from "../model/mesage.model.js"
 import User from "../model/user.model.js"
 
-export const getUsersForSidebar =async(req,res)=>{
-    try {
-        const logedUserId= req.user._id
-        const filteredUsers= await User.find({_id:{$ne:logedUserId}}).select("-password")
 
-        res.status(201).json({
-            success:true,
-            allUsers:filteredUsers
-        })
-    } catch (error) {
-        console.log("eeeror occured i all users",error);
-        
-        res.status(500).json({
-            success:false,
-           message:"internal erver error"
-        })
-        
-    }
+export const getUsersForSidebar = async (req,res) => {
+  console.log("lllllllfvdvdllloged");
+  try {
+   
+    const loggedUserId = req.user._id;
+    
+    
+    // Fetch all users except the logged-in user
+    const filteredUsers = await User.find({ _id: { $ne: loggedUserId } }).select("-password");
 
-}
+    res.status(200).json({
+      success: true,
+      users: filteredUsers,
+    });
+  } catch (error) {
+    console.error("Error occurred in getUsersForSidebar:", error);
+
+    res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message || "Something went wrong"}`,
+    });
+  }
+};
+
 
 // getting all message between two users
 export const getMessages=async (req,res)=>{
+  console.log("ffffffffffffffeeeeeeeeeeeeeeeeeeeeee");
+  
     try {
         const senderId=req.user._id
         const receverId=req.params.id
