@@ -7,8 +7,9 @@ import {app,server,io} from '../src/lib/socket.js'
 import { connectDB } from "./lib/db.js";
 import dotenv from "dotenv";
 import  bodyParser from 'body-parser'
+import path from "path"
 dotenv.config();
-
+const _dirname=path.resolve()
 
 // ✅ CORS Configuration (Specific Origin Required for Cookies)
 app.use(
@@ -33,6 +34,13 @@ connectDB()
 app.use("/api/auth", authRoute);
 app.use("/api/messages", message);
 
+
+if(process.env.NODE_ENV==="production"){
+  app.use(express.static(path.join(_dirname,"../client/dist")))
+  app.get("*",(req,res)=>{
+    res.sendFile(path.join(_dirname,"../client","/dist", "index.html"))
+  })
+}
 const PORT = 4000;
 server.listen(PORT, () => {
   console.log(`App is running on port ${PORT}`);

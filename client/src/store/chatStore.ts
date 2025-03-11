@@ -2,12 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import userAuthStore from "./userAuthStore";
-interface User {
-    _id: string | null
-    fullName: string;
-    email: string;
-    profilePic:string
-  }
+
 interface ChatState{
     messages:any[]
 users:[]
