@@ -65,10 +65,12 @@ export const login = async (req, res) => {
     generateToken(user._id, res);
 
     res.status(200).json({
-      _id: user._id,
+      user:{
+        _id: user._id,
       fullName: user.fullName,
       email: user.email,
       profilePic: user.profilePic,
+      }
     });
   } catch (error) {
     console.log("Error in login controller", error.message);

@@ -20,6 +20,7 @@ const ProfilePage = () => {
     await updateProfile({profilePic:base64Image})
   }
   };
+  
 
 
   return (

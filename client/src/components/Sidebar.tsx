@@ -7,8 +7,8 @@ import userAuthStore from "../store/userAuthStore";
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = chatStore();
 
-  const  onlineUsers:any = []
-  const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+  const  {onlineUsers}=userAuthStore()
+  const [showOnlineOnly, setShowOnlineOnly] = useState<boolean>(false);
 
   useEffect(() => {
     getUsers();
@@ -28,7 +28,18 @@ const Sidebar = () => {
           <span className="font-medium hidden lg:block">Contacts</span>
         </div>
         {/* TODO: Online filter toggle */}
-    
+        <div className="mt-3 hidden lg:flex items-center gap-2">
+          <label className="cursor-pointer flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={showOnlineOnly}
+              onChange={(e) => setShowOnlineOnly(e.target.checked)}
+              className="checkbox checkbox-sm"
+            />
+            <span className="text-sm">Show online only</span>
+          </label>
+          <span className="text-xs text-zinc-500">({onlineUsers.length - 1} online)</span>
+        </div>
       </div>
 
       <div className="overflow-y-auto w-full py-3">

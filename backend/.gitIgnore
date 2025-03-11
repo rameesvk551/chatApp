@@ -1,4 +1,4 @@
- Logs
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -7,18 +7,38 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node dependencies
 node_modules
+
+# Build outputs
 dist
 dist-ssr
+out
+.next
+
+# Environment and local files
 *.local
+*.env
+*.env.*    # Covers files like `.env.production`, `.env.development`, etc.
+!.env.example  # Keeps the example file for reference
 
 # Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Testing
+coverage
+*.lcov
+
+# Misc
+*.lock

@@ -3,7 +3,7 @@ import authRoute from "./routes/auth.route.js";
 import message from "./routes/message.route.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-const app=express()
+import {app,server,io} from '../src/lib/socket.js'
 import { connectDB } from "./lib/db.js";
 import dotenv from "dotenv";
 import  bodyParser from 'body-parser'
@@ -34,6 +34,6 @@ app.use("/api/auth", authRoute);
 app.use("/api/messages", message);
 
 const PORT = 4000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`App is running on port ${PORT}`);
 });

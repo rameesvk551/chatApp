@@ -1,4 +1,5 @@
 import cloudinary from "../lib/cloudinary.config.js"
+import { getReceiverSocketId, io } from "../lib/socket.js";
 import Message from "../model/mesage.model.js"
 import User from "../model/user.model.js"
 
@@ -30,11 +31,14 @@ export const getUsersForSidebar = async (req,res) => {
 
 // getting all message between two users
 export const getMessages=async (req,res)=>{
+
   console.log("ffffffffffffffeeeeeeeeeeeeeeeeeeeeee");
   
     try {
-        const senderId=req.user._id
+        const senderId=req.user._id.toString();
         const receverId=req.params.id
+        console.log(senderId,receverId,"ffffffffrrijrijgijibj");
+        
         const allMessages=await Message.find({
             $or:[
                 {senderId:senderId,receverId:receverId},
@@ -43,8 +47,9 @@ export const getMessages=async (req,res)=>{
         ]
 
         })
+console.log("aaaaaaaaaaaal meages ",allMessages);
 
-        res.status(500).json({
+        res.status(200).json({
             success:true,
           allmessagesBetweenThem:allMessages
         })
@@ -61,10 +66,16 @@ export const getMessages=async (req,res)=>{
 
 export const sendMessage=async (req,res)=>{
     try {
+      
+      
         const {image,text}=req.body
+     
+        
 const receverId=req.params.id
-const senderId=receverId.user._id
-let imageUrl 
+const senderId = req.user._id.toString();
+let imageUrl =""
+
+
 if(image){
     const imageUploadResponse =await cloudinary.uploader.upload(image)
    imageUrl=imageUploadResponse.secure_url}
@@ -76,14 +87,21 @@ if(image){
     image:imageUrl,
     text:text
    })
+  console.log(newMessage)
+await newMessage.save()
 
-   res.status(500).json({
+const receiverSocketId = getReceiverSocketId(receverId);
+if (receiverSocketId) {
+    io.to(receiverSocketId).emit("newMessage", newMessage);  
+}
+
+   res.status(200).json({
     success:true,
-  newMessage
+   newMessage
 })
 
-   await newMessage.save()
     } catch (error) {
+console.log("eeror occcccccured",error);
 
         
     

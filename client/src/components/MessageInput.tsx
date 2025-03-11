@@ -1,50 +1,54 @@
 import { useRef, useState } from "react";
-import { useChatStore } from "../store/useChatStore";
+import { chatStore } from "../store/chatStore";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const MessageInput = () => {
   const [text, setText] = useState("");
-  const [imagePreview, setImagePreview] = useState(null);
-  const fileInputRef = useRef(null);
-  const { sendMessage } = useChatStore();
+  const [imagePreview, setImagePreview] = useState<string|null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { sendMessage } = chatStore();
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: any) => {
     const file = e.target.files[0];
+    
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
-      return;
+        toast.error("Please upload an image file");
+        return;
     }
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);
+        setImagePreview(reader.result);
     };
-    reader.readAsDataURL(file);
-  };
+    reader.readAsDataURL(file); // Don't forget to read the file
+};
+
 
   const removeImage = () => {
-    setImagePreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    setImagePreview(null)
+    if(fileInputRef.current) fileInputRef.current.value=""
+
   };
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!text.trim() && !imagePreview) return;
+  const handleSendMessage = async (e:any) => {
+    e.preventDefault()
 
-    try {
-      await sendMessage({
-        text: text.trim(),
-        image: imagePreview,
-      });
+   if(!text.trim() && !imagePreview) return;
 
-      // Clear form
-      setText("");
-      setImagePreview(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (error) {
-      console.error("Failed to send message:", error);
-    }
+   try {
+    await sendMessage({text:text.trim(),image:imagePreview})
+
+    //clear form 
+    setText("")
+      setImagePreview(null)
+      if(fileInputRef.current) fileInputRef.current.value=""
+    
+   } catch (error) {
+    console.log("failed to end meages",error);
+    
+    
+   }
   };
 
   return (
@@ -90,7 +94,7 @@ const MessageInput = () => {
             type="button"
             className={`hidden sm:flex btn btn-circle
                      ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
-            onClick={() => fileInputRef.current?.click()}
+                     onClick={() => fileInputRef.current?.click()}
           >
             <Image size={20} />
           </button>
