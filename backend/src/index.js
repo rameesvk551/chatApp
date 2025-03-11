@@ -41,7 +41,7 @@ if(process.env.NODE_ENV==="production"){
     res.sendFile(path.join(_dirname,"../client","/dist", "index.html"))
   })
 }
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
   console.log(`App is running on port ${PORT}`);
 });
